@@ -54,8 +54,11 @@ session_start();
     </div>
     <div class="search-bar">
         <input type="text" id="searchInput" placeholder="Rechercher...">
+        <br>
+        <br>
+        <h1>Liste des Véhicules Disponibles</h1>
     </div>
-    <h1>Liste des Véhicules Disponibles</h1>
+    
     <div class="vehicles-container" id="vehiclesContainer">
         <?php
         $conn = new mysqli("localhost", "root", "", "locauto");
