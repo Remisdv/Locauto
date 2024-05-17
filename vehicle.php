@@ -1,23 +1,21 @@
 <?php
-// Configuration de la connexion à la base de données
+session_start();
+
 $servername = "localhost";
 $username = "root";
 $password = "";
 $dbname = "locauto";
 
-// Création de la connexion
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-// Vérification de la connexion
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Récupérer l'immatriculation du véhicule depuis l'URL
 $immatriculation = $_GET['immatriculation'];
 
 // Requête SQL pour récupérer les détails du véhicule
-$sql = "SELECT v.immatriculation, v.image, v.kilometrage, v.prix, c.categorie, m.marque, mo.modele
+$sql = "SELECT v.immatriculation, v.image, v.kilometrage, c.categorie, m.marque, mo.modele, v.prix
         FROM voitures v
         JOIN categories c ON v.id_categorie = c.id_categorie
         JOIN marques m ON v.id_marque = m.id_marque
@@ -25,11 +23,15 @@ $sql = "SELECT v.immatriculation, v.image, v.kilometrage, v.prix, c.categorie, m
         WHERE v.immatriculation = '$immatriculation'";
 
 $result = $conn->query($sql);
-$vehicle = $result->fetch_assoc();
 
-// Requête SQL pour récupérer les options disponibles
-$options_sql = "SELECT id_option, option, prix FROM options";
-$options_result = $conn->query($options_sql);
+if ($result->num_rows == 1) {
+    $vehicle = $result->fetch_assoc();
+} else {
+    echo "Véhicule non trouvé";
+    exit();
+}
+
+$conn->close();
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -46,43 +48,44 @@ $options_result = $conn->query($options_sql);
                 <li><a href="index.php">Accueil</a></li>
                 <li><a href="#">Véhicules</a></li>
                 <li><a href="#">Contact</a></li>
+                <li class="menu-dropdown">
+                    <a href="javascript:void(0)" class="dropbtn"><?php echo isset($_SESSION['user_id']) ? $_SESSION['username'] : 'Compte'; ?></a>
+                    <div class="dropdown-content">
+                        <?php if (isset($_SESSION['user_id'])): ?>
+                            <?php if (isset($_SESSION['is_admin']) && $_SESSION['is_admin']): ?>
+                                <a href="admin.php">Administration</a>
+                            <?php endif; ?>
+                            <a href="logout.php">Déconnexion</a>
+                        <?php else: ?>
+                            <a href="login.php">Connexion</a>
+                            <a href="register.php">Inscription</a>
+                        <?php endif; ?>
+                    </div>
+                </li>
             </ul>
         </nav>
     </header>
     <div class="vehicle-details">
-        <?php if ($vehicle): ?>
-            <div class="vehicle-image">
-                <img src="<?php echo $vehicle['image']; ?>" alt="<?php echo $vehicle['modele']; ?>">
-            </div>
-            <div class="vehicle-info">
-                <h1><?php echo $vehicle['marque'] . " " . $vehicle['modele']; ?></h1>
-                <p><strong>Immatriculation:</strong> <?php echo $vehicle['immatriculation']; ?></p>
-                <p><strong>Kilométrage:</strong> <?php echo $vehicle['kilometrage']; ?> km</p>
-                <p><strong>Catégorie:</strong> <?php echo $vehicle['categorie']; ?></p>
-                <p><strong>Prix:</strong> <?php echo $vehicle['prix']; ?> €</p>
-                
-                <h2>Options disponibles</h2>
-                <form>
-                    <?php
-                    if ($options_result->num_rows > 0) {
-                        while($option = $options_result->fetch_assoc()) {
-                            echo "<div class='option'>";
-                            echo "<input type='checkbox' id='option_" . $option['id_option'] . "' name='options[]' value='" . $option['id_option'] . "'>";
-                            echo "<label for='option_" . $option['id_option'] . "'>" . $option['option'] . " (+ " . $option['prix'] . " €)</label>";
-                            echo "</div>";
-                        }
-                    } else {
-                        echo "<p>Aucune option disponible</p>";
-                    }
-                    ?>
+        <div class="vehicle-image">
+            <img src="<?php echo $vehicle['image']; ?>" alt="<?php echo $vehicle['modele']; ?>">
+        </div>
+        <div class="vehicle-info">
+            <h1><?php echo $vehicle['marque'] . " " . $vehicle['modele']; ?></h1>
+            <p>Immatriculation: <?php echo $vehicle['immatriculation']; ?></p>
+            <p>Kilométrage: <?php echo $vehicle['kilometrage']; ?> km</p>
+            <p>Catégorie: <?php echo $vehicle['categorie']; ?></p>
+            <p>Prix: <?php echo $vehicle['prix']; ?> €</p>
+            <?php if (isset($_SESSION['user_id'])): ?>
+                <form action="reserve.php" method="POST">
+                    <input type="hidden" name="immatriculation" value="<?php echo $vehicle['immatriculation']; ?>">
+                    <label for="kilometres">Kilomètres:</label>
+                    <input type="number" id="kilometres" name="kilometres" required>
+                    <button type="submit">Réserver</button>
                 </form>
-            </div>
-        <?php else: ?>
-            <p>Véhicule non trouvé</p>
-        <?php endif; ?>
+            <?php else: ?>
+                <p><a href="login.php">Connectez-vous</a> pour réserver ce véhicule.</p>
+            <?php endif; ?>
+        </div>
     </div>
 </body>
 </html>
-<?php
-$conn->close();
-?>

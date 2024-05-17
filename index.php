@@ -21,6 +21,9 @@ session_start();
                     <a href="javascript:void(0)" class="dropbtn"><?php echo isset($_SESSION['user_id']) ? $_SESSION['username'] : 'Compte'; ?></a>
                     <div class="dropdown-content">
                         <?php if (isset($_SESSION['user_id'])): ?>
+                            <?php if (isset($_SESSION['is_admin']) && $_SESSION['is_admin']): ?>
+                                <a href="admin.php">Administration</a>
+                            <?php endif; ?>
                             <a href="logout.php">Déconnexion</a>
                         <?php else: ?>
                             <a href="login.php">Connexion</a>
