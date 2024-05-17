@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.0.2
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : ven. 17 mai 2024 à 13:15
--- Version du serveur : 10.4.32-MariaDB
--- Version de PHP : 8.2.12
+-- Généré le : ven. 17 mai 2024 à 23:59
+-- Version du serveur :  10.4.11-MariaDB
+-- Version de PHP : 7.2.29
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -31,16 +31,17 @@ CREATE TABLE `categories` (
   `id_categorie` int(11) NOT NULL,
   `categorie` varchar(256) NOT NULL,
   `prix` decimal(5,2) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `categories`
 --
 
 INSERT INTO `categories` (`id_categorie`, `categorie`, `prix`) VALUES
-(1, 'Economique', 19.99),
-(2, 'Standard', 29.99),
-(3, 'Luxe', 49.99);
+(1, 'Economique', '19.99'),
+(2, 'Standard', '29.99'),
+(3, 'Luxe', '49.99'),
+(4, 'Break', '0.00');
 
 -- --------------------------------------------------------
 
@@ -52,7 +53,7 @@ CREATE TABLE `choixoptions` (
   `id_choix_option` int(11) NOT NULL,
   `id_option` int(11) NOT NULL,
   `id_louer` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `choixoptions`
@@ -78,7 +79,7 @@ CREATE TABLE `clients` (
   `email` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
   `is_admin` tinyint(1) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `clients`
@@ -104,7 +105,7 @@ CREATE TABLE `louer` (
   `date_fin` date NOT NULL,
   `kilometrage_debut` int(11) NOT NULL,
   `kilometrage_fin` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `louer`
@@ -123,7 +124,7 @@ INSERT INTO `louer` (`id_louer`, `id_client`, `immatriculation`, `date_debut`, `
 CREATE TABLE `marques` (
   `id_marque` int(11) NOT NULL,
   `marque` varchar(256) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `marques`
@@ -132,7 +133,8 @@ CREATE TABLE `marques` (
 INSERT INTO `marques` (`id_marque`, `marque`) VALUES
 (1, 'Toyota'),
 (2, 'Ford'),
-(3, 'BMW');
+(3, 'BMW'),
+(4, 'Audi');
 
 -- --------------------------------------------------------
 
@@ -143,7 +145,7 @@ INSERT INTO `marques` (`id_marque`, `marque`) VALUES
 CREATE TABLE `modeles` (
   `id_modele` int(11) NOT NULL,
   `modele` varchar(256) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `modeles`
@@ -152,7 +154,8 @@ CREATE TABLE `modeles` (
 INSERT INTO `modeles` (`id_modele`, `modele`) VALUES
 (1, 'Corolla'),
 (2, 'Focus'),
-(3, 'X5');
+(3, 'X5'),
+(4, 'A4');
 
 -- --------------------------------------------------------
 
@@ -164,16 +167,16 @@ CREATE TABLE `options` (
   `id_option` int(11) NOT NULL,
   `option` varchar(256) NOT NULL,
   `prix` decimal(5,2) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `options`
 --
 
 INSERT INTO `options` (`id_option`, `option`, `prix`) VALUES
-(1, 'GPS', 5.00),
-(2, 'Siège bébé', 7.50),
-(3, 'Assurance complémentaire', 10.00);
+(1, 'GPS', '5.00'),
+(2, 'Siège bébé', '7.50'),
+(3, 'Assurance complémentaire', '10.00');
 
 -- --------------------------------------------------------
 
@@ -187,15 +190,7 @@ CREATE TABLE `reservations` (
   `immatriculation` varchar(16) DEFAULT NULL,
   `kilometres` int(11) DEFAULT NULL,
   `status` enum('pending','accepted','rejected') DEFAULT 'pending'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
---
--- Déchargement des données de la table `reservations`
---
-
-INSERT INTO `reservations` (`id`, `id_client`, `immatriculation`, `kilometres`, `status`) VALUES
-(1, 4, 'AB-123-CD', 100, 'accepted'),
-(2, 3, 'AB-123-CD', 100, 'accepted');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -206,7 +201,7 @@ INSERT INTO `reservations` (`id`, `id_client`, `immatriculation`, `kilometres`, 
 CREATE TABLE `typesclient` (
   `id_type_client` int(11) NOT NULL,
   `type_client` varchar(256) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `typesclient`
@@ -224,22 +219,21 @@ INSERT INTO `typesclient` (`id_type_client`, `type_client`) VALUES
 
 CREATE TABLE `voitures` (
   `immatriculation` varchar(16) NOT NULL,
-  `id_marque` int(11) NOT NULL,
-  `id_modele` int(11) NOT NULL,
+  `id_marque` int(11) DEFAULT NULL,
+  `id_modele` int(11) DEFAULT NULL,
   `image` varchar(255) NOT NULL,
   `kilometrage` int(11) NOT NULL,
-  `id_categorie` int(11) NOT NULL,
+  `id_categorie` int(11) DEFAULT NULL,
   `prix` decimal(10,2) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `voitures`
 --
 
 INSERT INTO `voitures` (`immatriculation`, `id_marque`, `id_modele`, `image`, `kilometrage`, `id_categorie`, `prix`) VALUES
-('AB-123-CD', 1, 1, 'https://www.largus.fr/images/styles/max_1300x1300/public/images/trophe-es-argus-2019-02_1.jpg?itok=t0qCk1H8', 10200, 1, 50.00),
-('EF-456-GH', 2, 2, 'https://www.gpas-cache.ford.com/guid/93030b0b-72c2-3bd2-ae49-6de6957c8f0b.png', 5000, 2, 100.00),
-('IJ-789-KL', 3, 3, 'https://www.largus.fr/images/images/2019-bmw-x5-hyrbide-45e-iperformance-blanc-10.jpg', 15000, 3, 150.00);
+('DR-157-YH', 4, 4, 'https://forums.audipassion.com/uploads/imageproxy/401454zks6ep.jpg.d3011d39b098d0714f0e113f4cffc65d.jpg', 2000, 4, '70.00'),
+('IJ-789-KL', 3, 3, 'https://www.largus.fr/images/images/2019-bmw-x5-hyrbide-45e-iperformance-blanc-10.jpg', 15000, 3, '150.00');
 
 --
 -- Index pour les tables déchargées
@@ -271,8 +265,7 @@ ALTER TABLE `clients`
 --
 ALTER TABLE `louer`
   ADD PRIMARY KEY (`id_louer`),
-  ADD KEY `id_client` (`id_client`),
-  ADD KEY `immatriculation` (`immatriculation`);
+  ADD KEY `id_client` (`id_client`);
 
 --
 -- Index pour la table `marques`
@@ -323,7 +316,7 @@ ALTER TABLE `voitures`
 -- AUTO_INCREMENT pour la table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id_categorie` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_categorie` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT pour la table `choixoptions`
@@ -347,13 +340,13 @@ ALTER TABLE `louer`
 -- AUTO_INCREMENT pour la table `marques`
 --
 ALTER TABLE `marques`
-  MODIFY `id_marque` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_marque` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT pour la table `modeles`
 --
 ALTER TABLE `modeles`
-  MODIFY `id_modele` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_modele` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT pour la table `options`
@@ -394,15 +387,14 @@ ALTER TABLE `clients`
 -- Contraintes pour la table `louer`
 --
 ALTER TABLE `louer`
-  ADD CONSTRAINT `louer_ibfk_1` FOREIGN KEY (`id_client`) REFERENCES `clients` (`id_client`),
-  ADD CONSTRAINT `louer_ibfk_2` FOREIGN KEY (`immatriculation`) REFERENCES `voitures` (`immatriculation`);
+  ADD CONSTRAINT `louer_ibfk_1` FOREIGN KEY (`id_client`) REFERENCES `clients` (`id_client`);
 
 --
 -- Contraintes pour la table `reservations`
 --
 ALTER TABLE `reservations`
   ADD CONSTRAINT `reservations_ibfk_1` FOREIGN KEY (`id_client`) REFERENCES `clients` (`id_client`),
-  ADD CONSTRAINT `reservations_ibfk_2` FOREIGN KEY (`immatriculation`) REFERENCES `voitures` (`immatriculation`);
+  ADD CONSTRAINT `reservations_ibfk_2` FOREIGN KEY (`immatriculation`) REFERENCES `voitures` (`immatriculation`) ON DELETE CASCADE;
 
 --
 -- Contraintes pour la table `voitures`
