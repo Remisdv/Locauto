@@ -19,53 +19,6 @@ if ($conn->connect_error) {
 
 $message = '';
 
-// Traitement de l'ajout d'un véhicule
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_vehicle'])) {
-    $marque = $_POST['marque'];
-    $modele = $_POST['modele'];
-    $immatriculation = $_POST['immatriculation'];
-    $image = $_POST['image'];
-    $kilometrage = $_POST['kilometrage'];
-    $categorie = $_POST['categorie'];
-    $prix = $_POST['prix'];
-
-    $sql = "INSERT INTO voitures (immatriculation, id_marque, id_modele, image, kilometrage, id_categorie, prix) VALUES ('$immatriculation', (SELECT id_marque FROM marques WHERE marque='$marque'), (SELECT id_modele FROM modeles WHERE modele='$modele'), '$image', '$kilometrage', (SELECT id_categorie FROM categories WHERE categorie='$categorie'), '$prix')";
-
-    if ($conn->query($sql) === TRUE) {
-        $message = "Véhicule ajouté avec succès.";
-    } else {
-        $message = "Erreur: " . $sql . "<br>" . $conn->error;
-    }
-}
-
-// Traitement de l'ajout d'une option
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_option'])) {
-    $option = $_POST['option'];
-    $prix = $_POST['prix'];
-
-    $sql = "INSERT INTO options (option, prix) VALUES ('$option', '$prix')";
-
-    if ($conn->query($sql) === TRUE) {
-        $message = "Option ajoutée avec succès.";
-    } else {
-        $message = "Erreur: " . $sql . "<br>" . $conn->error;
-    }
-}
-
-// Traitement de la mise à jour du statut d'administrateur d'un client
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_admin_status'])) {
-    $client_id = $_POST['client_id'];
-    $is_admin = $_POST['is_admin'] ? 1 : 0;
-
-    $sql = "UPDATE clients SET is_admin='$is_admin' WHERE id_client='$client_id'";
-
-    if ($conn->query($sql) === TRUE) {
-        $message = "Statut d'administrateur mis à jour avec succès.";
-    } else {
-        $message = "Erreur: " . $sql . "<br>" . $conn->error;
-    }
-}
-
 // Traitement de l'acceptation ou du rejet des réservations
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_reservation_status'])) {
     $reservation_id = $_POST['reservation_id'];
@@ -89,15 +42,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_reservation_sta
     }
 }
 
-// Récupération de tous les clients
-$sql_clients = "SELECT * FROM clients";
-$result_clients = $conn->query($sql_clients);
+// Traitement de la suppression des réservations
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_reservation'])) {
+    $reservation_id = $_POST['reservation_id'];
+
+    // Supprimer les options associées à la réservation
+    $sql_delete_options = "DELETE FROM reservation_options WHERE reservation_id='$reservation_id'";
+    $conn->query($sql_delete_options);
+
+    // Supprimer la réservation
+    $sql_delete_reservation = "DELETE FROM reservations WHERE id='$reservation_id'";
+
+    if ($conn->query($sql_delete_reservation) === TRUE) {
+        $message = "Réservation supprimée avec succès.";
+    } else {
+        $message = "Erreur: " . $sql_delete_reservation . "<br>" . $conn->error;
+    }
+}
 
 // Récupération de toutes les réservations
-$sql_reservations = "SELECT r.id, r.immatriculation, r.kilometres, r.status, c.nom, c.prenom FROM reservations r JOIN clients c ON r.id_client = c.id_client";
+$sql_reservations = "SELECT r.id, r.immatriculation, r.kilometres, r.days, r.total_price, r.status, c.nom, c.prenom
+                     FROM reservations r
+                     JOIN clients c ON r.id_client = c.id_client";
 $result_reservations = $conn->query($sql_reservations);
-
-$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -109,90 +76,23 @@ $conn->close();
     <link rel="stylesheet" href="CSS/styles.css">
 </head>
 <body>
-    <header>
-        <nav>
-            <ul>
-                <li><a href="index.php">Accueil</a></li>
-                <li><a href="logout.php">Déconnexion</a></li>
-            </ul>
-        </nav>
-    </header>
+<header>
+    <nav>
+        <ul>
+            <li><a href="index.php">Accueil</a></li>
+            <li><a href="admin.php">Réservations</a></li>
+            <li><a href="admin_annonces.php">Gérer les Annonces</a></li>
+            <li><a href="admin_clients.php">Gérer les Clients</a></li>
+            <li><a href="logout.php">Déconnexion</a></li>
+        </ul>
+    </nav>
+</header>
+
     <div class="admin-container">
-        <h2>Administration</h2>
+        <h2>Administration - Réservations</h2>
         <?php if ($message): ?>
             <p class="message"><?php echo $message; ?></p>
         <?php endif; ?>
-        <div class="form-section">
-            <h3>Ajouter un Véhicule</h3>
-            <form action="admin.php" method="POST">
-                <label for="marque">Marque</label>
-                <input type="text" id="marque" name="marque" required>
-                <label for="modele">Modèle</label>
-                <input type="text" id="modele" name="modele" required>
-                <label for="immatriculation">Immatriculation</label>
-                <input type="text" id="immatriculation" name="immatriculation" required>
-                <label for="image">Image (URL)</label>
-                <input type="text" id="image" name="image" required>
-                <label for="kilometrage">Kilométrage</label>
-                <input type="number" id="kilometrage" name="kilometrage" required>
-                <label for="categorie">Catégorie</label>
-                <input type="text" id="categorie" name="categorie" required>
-                <label for="prix">Prix</label>
-                <input type="number" step="0.01" id="prix" name="prix" required>
-                <button type="submit" name="add_vehicle">Ajouter Véhicule</button>
-            </form>
-        </div>
-        <div class="form-section">
-            <h3>Ajouter une Option</h3>
-            <form action="admin.php" method="POST">
-                <label for="option">Option</label>
-                <input type="text" id="option" name="option" required>
-                <label for="prix">Prix</label>
-                <input type="number" step="0.01" id="prix" name="prix" required>
-                <button type="submit" name="add_option">Ajouter Option</button>
-            </form>
-        </div>
-        <div class="form-section">
-            <h3>Gérer les Clients</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nom</th>
-                        <th>Prénom</th>
-                        <th>Email</th>
-                        <th>Adresse</th>
-                        <th>Admin</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if ($result_clients->num_rows > 0): ?>
-                        <?php while($row = $result_clients->fetch_assoc()): ?>
-                            <tr>
-                                <td><?php echo $row['id_client']; ?></td>
-                                <td><?php echo $row['nom']; ?></td>
-                                <td><?php echo $row['prenom']; ?></td>
-                                <td><?php echo $row['email']; ?></td>
-                                <td><?php echo $row['adresse']; ?></td>
-                                <td><?php echo $row['is_admin'] ? 'Oui' : 'Non'; ?></td>
-                                <td>
-                                    <form action="admin.php" method="POST" style="display:inline;">
-                                        <input type="hidden" name="client_id" value="<?php echo $row['id_client']; ?>">
-                                        <input type="hidden" name="is_admin" value="<?php echo $row['is_admin'] ? 0 : 1; ?>">
-                                        <button type="submit" name="update_admin_status"><?php echo $row['is_admin'] ? 'Retirer Admin' : 'Mettre Admin'; ?></button>
-                                    </form>
-                                </td>
-                            </tr>
-                        <?php endwhile; ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="7">Aucun client trouvé.</td>
-                        </tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
         <div class="form-section">
             <h3>Gérer les Réservations</h3>
             <table>
@@ -202,6 +102,9 @@ $conn->close();
                         <th>Client</th>
                         <th>Immatriculation</th>
                         <th>Kilomètres</th>
+                        <th>Durée (jours)</th>
+                        <th>Options</th>
+                        <th>Prix Total</th>
                         <th>Statut</th>
                         <th>Actions</th>
                     </tr>
@@ -214,6 +117,24 @@ $conn->close();
                                 <td><?php echo $row['nom'] . " " . $row['prenom']; ?></td>
                                 <td><?php echo $row['immatriculation']; ?></td>
                                 <td><?php echo $row['kilometres']; ?></td>
+                                <td><?php echo $row['days']; ?></td>
+                                <td>
+                                    <?php
+                                    $reservation_id = $row['id'];
+                                    $sql_options = "SELECT o.option, o.prix FROM reservation_options ro 
+                                                    JOIN options o ON ro.option_id = o.id_option 
+                                                    WHERE ro.reservation_id = '$reservation_id'";
+                                    $result_options = $conn->query($sql_options);
+                                    if ($result_options->num_rows > 0) {
+                                        while ($option = $result_options->fetch_assoc()) {
+                                            echo $option['option'] . " (+".$option['prix']." €)<br>";
+                                        }
+                                    } else {
+                                        echo "Aucune option";
+                                    }
+                                    ?>
+                                </td>
+                                <td><?php echo $row['total_price']; ?> €</td>
                                 <td><?php echo ucfirst($row['status']); ?></td>
                                 <td>
                                     <?php if ($row['status'] == 'pending'): ?>
@@ -230,17 +151,22 @@ $conn->close();
                                             <button type="submit" name="update_reservation_status">Rejeter</button>
                                         </form>
                                     <?php endif; ?>
+                                    <form action="admin.php" method="POST" style="display:inline;">
+                                        <input type="hidden" name="reservation_id" value="<?php echo $row['id']; ?>">
+                                        <button type="submit" name="delete_reservation">Supprimer</button>
+                                    </form>
                                 </td>
                             </tr>
                         <?php endwhile; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="6">Aucune réservation trouvée.</td>
+                            <td colspan="9">Aucune réservation trouvée.</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
             </table>
         </div>
     </div>
+    <?php $conn->close(); ?>
 </body>
 </html>

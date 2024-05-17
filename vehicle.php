@@ -31,6 +31,17 @@ if ($result->num_rows == 1) {
     exit();
 }
 
+// Requête SQL pour récupérer les options disponibles
+$sql_options = "SELECT id_option, option, prix FROM options";
+$result_options = $conn->query($sql_options);
+
+$options = [];
+if ($result_options->num_rows > 0) {
+    while ($row = $result_options->fetch_assoc()) {
+        $options[] = $row;
+    }
+}
+
 $conn->close();
 ?>
 <!DOCTYPE html>
@@ -40,6 +51,25 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Détails du Véhicule</title>
     <link rel="stylesheet" href="CSS/styles.css">
+    <script>
+        function calculatePrice() {
+            const pricePer100Km = <?php echo $vehicle['prix']; ?>;
+            const kilometres = document.getElementById('kilometres').value;
+            const days = document.getElementById('days').value;
+            const options = document.querySelectorAll('input[name="options[]"]:checked');
+            let totalPrice = (pricePer100Km / 100) * kilometres;
+
+            // Ajouter le prix des options sélectionnées
+            options.forEach(option => {
+                totalPrice += parseFloat(option.dataset.price);
+            });
+
+            // Ajouter le coût supplémentaire par jour
+            totalPrice += totalPrice * 0.5 * days;
+
+            document.getElementById('totalPrice').textContent = totalPrice.toFixed(2) + ' €';
+        }
+    </script>
 </head>
 <body>
     <header>
@@ -74,12 +104,24 @@ $conn->close();
             <p>Immatriculation: <?php echo $vehicle['immatriculation']; ?></p>
             <p>Kilométrage: <?php echo $vehicle['kilometrage']; ?> km</p>
             <p>Catégorie: <?php echo $vehicle['categorie']; ?></p>
-            <p>Prix: <?php echo $vehicle['prix']; ?> €</p>
+            <p>Prix par 100 km: <?php echo $vehicle['prix']; ?> €</p>
             <?php if (isset($_SESSION['user_id'])): ?>
-                <form action="reserve.php" method="POST">
+                <form action="reserve.php" method="POST" oninput="calculatePrice()">
                     <input type="hidden" name="immatriculation" value="<?php echo $vehicle['immatriculation']; ?>">
                     <label for="kilometres">Kilomètres:</label>
                     <input type="number" id="kilometres" name="kilometres" required>
+                    <label for="days">Durée (jours):</label>
+                    <input type="number" id="days" name="days" required>
+                    <fieldset>
+                        <legend>Options:</legend>
+                        <?php foreach ($options as $option): ?>
+                            <label>
+                                <input type="checkbox" name="options[]" value="<?php echo $option['id_option']; ?>" data-price="<?php echo $option['prix']; ?>">
+                                <?php echo $option['option']; ?> (+<?php echo $option['prix']; ?> €)
+                            </label><br>
+                        <?php endforeach; ?>
+                    </fieldset>
+                    <p>Prix total: <span id="totalPrice">0 €</span></p>
                     <button type="submit">Réserver</button>
                 </form>
             <?php else: ?>
