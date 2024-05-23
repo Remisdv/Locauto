@@ -15,7 +15,7 @@ if ($conn->connect_error) {
 $immatriculation = $_GET['immatriculation'];
 
 // Requête SQL pour récupérer les détails du véhicule
-$sql = "SELECT v.immatriculation, v.image, v.kilometrage, c.categorie, m.marque, mo.modele, v.prix
+$sql = "SELECT v.immatriculation, v.kilometrage, c.categorie, m.marque, mo.modele, v.prix
         FROM voitures v
         JOIN categories c ON v.id_categorie = c.id_categorie
         JOIN marques m ON v.id_marque = m.id_marque
@@ -29,6 +29,17 @@ if ($result->num_rows == 1) {
 } else {
     echo "Véhicule non trouvé";
     exit();
+}
+
+// Requête SQL pour récupérer les images associées
+$sql_images = "SELECT image_url FROM images WHERE immatriculation = '$immatriculation'";
+$result_images = $conn->query($sql_images);
+
+$images = [];
+if ($result_images->num_rows > 0) {
+    while ($row = $result_images->fetch_assoc()) {
+        $images[] = $row["image_url"];
+    }
 }
 
 // Requête SQL pour récupérer les options disponibles
@@ -69,6 +80,31 @@ $conn->close();
 
             document.getElementById('totalPrice').textContent = totalPrice.toFixed(2) + ' €';
         }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const slider = document.querySelector(".image-slider");
+            const images = slider.querySelectorAll("img");
+            let currentIndex = 0;
+
+            function showImage(index) {
+                images.forEach((img, i) => {
+                    img.classList.remove("active");
+                    if (i === index) {
+                        img.classList.add("active");
+                    }
+                });
+            }
+
+            function nextImage() {
+                currentIndex = (currentIndex + 1) % images.length;
+                showImage(currentIndex);
+            }
+
+            if (images.length > 0) {
+                showImage(currentIndex);
+                setInterval(nextImage, 3000); // Change image every 3 seconds
+            }
+        });
     </script>
 </head>
 <body>
@@ -97,7 +133,13 @@ $conn->close();
     </header>
     <div class="vehicle-details">
         <div class="vehicle-image">
-            <img src="<?php echo $vehicle['image']; ?>" alt="<?php echo $vehicle['modele']; ?>">
+            <div class="image-slider">
+                <?php foreach ($images as $image): ?>
+                    <img src="<?php echo $image; ?>" alt="<?php echo $vehicle['modele']; ?>">
+                <?php endforeach; ?>
+                <button class='prev' onclick='changeImage(this, -1)'>❮</button>
+                <button class='next' onclick='changeImage(this, 1)'>❯</button>
+            </div>
         </div>
         <div class="vehicle-info">
             <h1><?php echo $vehicle['marque'] . " " . $vehicle['modele']; ?></h1>

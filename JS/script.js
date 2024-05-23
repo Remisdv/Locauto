@@ -53,3 +53,57 @@ function redirectToDetails(element) {
     var immatriculation = element.getAttribute('data-immatriculation');
     window.location.href = 'vehicle.php?immatriculation=' + immatriculation;
 }
+
+document.addEventListener("DOMContentLoaded", function() {
+    const sliders = document.querySelectorAll('.image-slider');
+    sliders.forEach(slider => {
+        const images = slider.querySelectorAll('img');
+        images.forEach((img, index) => {
+            img.style.display = index === 0 ? 'block' : 'none';
+        });
+
+        let currentIndex = 0;
+
+        function showImage(index) {
+            images.forEach((img, i) => {
+                img.style.display = 'none';
+                if (i === index) {
+                    img.style.display = 'block';
+                }
+            });
+        }
+
+        function changeImage(button, n) {
+            const slider = button.parentElement;
+            const images = slider.querySelectorAll('img');
+            let currentIndex;
+            images.forEach((img, index) => {
+                if (img.style.display === 'block') {
+                    currentIndex = index;
+                    img.style.display = 'none';
+                }
+            });
+            let newIndex = currentIndex + n;
+            if (newIndex >= images.length) newIndex = 0;
+            if (newIndex < 0) newIndex = images.length - 1;
+            images[newIndex].style.display = 'block';
+        }
+
+        slider.querySelector('.prev').addEventListener('click', function(e) {
+            e.stopPropagation();
+            changeImage(this, -1);
+        });
+
+        slider.querySelector('.next').addEventListener('click', function(e) {
+            e.stopPropagation();
+            changeImage(this, 1);
+        });
+    });
+});
+
+function redirectToDetails(element) {
+    const immatriculation = element.getAttribute('data-immatriculation');
+    window.location.href = 'vehicle.php?immatriculation=' + immatriculation;
+}
+
+

@@ -65,7 +65,7 @@ session_start();
         if ($conn->connect_error) {
             die("Connection failed: " . $conn->connect_error);
         }
-        $sql = "SELECT v.immatriculation, v.image, v.kilometrage, c.categorie, m.marque, mo.modele
+        $sql = "SELECT v.immatriculation, c.categorie, m.marque, mo.modele, v.prix
                 FROM voitures v
                 JOIN categories c ON v.id_categorie = c.id_categorie
                 JOIN marques m ON v.id_marque = m.id_marque
@@ -73,12 +73,22 @@ session_start();
         $result = $conn->query($sql);
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
-                echo "<div class='vehicle-card' data-immatriculation='" . $row["immatriculation"] . "' data-kilometrage='" . $row["kilometrage"] . "' data-categorie='" . $row["categorie"] . "' onclick='redirectToDetails(this)'>";
-                echo "<img src='" . $row["image"] . "' alt='" . $row["modele"] . "'>";
+                $immatriculation = $row["immatriculation"];
+                echo "<div class='vehicle-card' data-immatriculation='" . $row["immatriculation"] . "' onclick='redirectToDetails(this)'>";
+                // Fetch images for this vehicle
+                $sql_images = "SELECT image_url FROM images WHERE immatriculation = '$immatriculation'";
+                $result_images = $conn->query($sql_images);
+                if ($result_images->num_rows > 0) {
+                    echo "<div class='image-slider'>";
+                    while ($image_row = $result_images->fetch_assoc()) {
+                        echo "<img src='" . $image_row["image_url"] . "' alt='" . $row["modele"] . "'>";
+                    }
+                    echo "<button class='prev' onclick='event.stopPropagation();changeImage(this, -1)'>❮</button>";
+                    echo "<button class='next' onclick='event.stopPropagation();changeImage(this, 1)'>❯</button>";
+                    echo "</div>";
+                }
                 echo "<h2>" . $row["marque"] . " " . $row["modele"] . "</h2>";
-                echo "<p>Immatriculation: " . $row["immatriculation"] . "</p>";
-                echo "<p>Kilométrage: " . $row["kilometrage"] . " km</p>";
-                echo "<p>Catégorie: " . $row["categorie"] . "</p>";
+                echo "<p>Prix par 100 km: " . $row["prix"] . " €</p>";
                 echo "</div>";
             }
         } else {
