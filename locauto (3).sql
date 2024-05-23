@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : jeu. 23 mai 2024 à 09:30
+-- Généré le : jeu. 23 mai 2024 à 10:11
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -90,6 +90,28 @@ INSERT INTO `clients` (`id_client`, `id_type_client`, `nom`, `prenom`, `adresse`
 (2, 2, 'Durand', 'Marie', '456 Avenue des Champs', '', '', 0),
 (3, 1, 'Lhuillier', 'Remi', '6 rue des trente', 'tgl@gmail.com', '$2y$10$XEH9igf5TldF1pSUxMoZ4ehGKr2IHnm/q7N6EICfu/OshX.3Bjwp2', 1),
 (4, 1, 'Enzo', 'Deca', '11 rue', 'tgl2@gmail.com', '$2y$10$0k7.spbuNko9L2bqOzKxceYJkw5xasmO1HoBqTlNh.c79Ghyjax2a', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `images`
+--
+
+CREATE TABLE `images` (
+  `id_image` int(11) NOT NULL,
+  `immatriculation` varchar(16) DEFAULT NULL,
+  `image_url` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Déchargement des données de la table `images`
+--
+
+INSERT INTO `images` (`id_image`, `immatriculation`, `image_url`) VALUES
+(1, 'AB-123-CD', 'https://www.largus.fr/images/styles/max_1300x1300/public/images/trophe-es-argus-2019-02_1.jpg?itok=t0qCk1H8'),
+(2, 'EF-456-GH', 'https://www.gpas-cache.ford.com/guid/93030b0b-72c2-3bd2-ae49-6de6957c8f0b.png'),
+(3, 'IJ-789-KL', 'https://www.largus.fr/images/images/2019-bmw-x5-hyrbide-45e-iperformance-blanc-10.jpg'),
+(4, 'AB-123-CD', 'https://scene7.toyota.eu/is/image/toyotaeurope/cor0003a_23_GR-SPORT_Gris-Mineral_03-2023:Medium-Landscape?ts=0&resMode=sharp2&op_usm=1.75,0.3,2,0');
 
 -- --------------------------------------------------------
 
@@ -241,7 +263,6 @@ CREATE TABLE `voitures` (
   `immatriculation` varchar(16) NOT NULL,
   `id_marque` int(11) NOT NULL,
   `id_modele` int(11) NOT NULL,
-  `image` varchar(255) NOT NULL,
   `kilometrage` int(11) NOT NULL,
   `id_categorie` int(11) NOT NULL,
   `prix` decimal(10,2) NOT NULL
@@ -251,10 +272,10 @@ CREATE TABLE `voitures` (
 -- Déchargement des données de la table `voitures`
 --
 
-INSERT INTO `voitures` (`immatriculation`, `id_marque`, `id_modele`, `image`, `kilometrage`, `id_categorie`, `prix`) VALUES
-('AB-123-CD', 1, 1, 'https://www.largus.fr/images/styles/max_1300x1300/public/images/trophe-es-argus-2019-02_1.jpg?itok=t0qCk1H8', 10200, 1, 50.00),
-('EF-456-GH', 2, 2, 'https://www.gpas-cache.ford.com/guid/93030b0b-72c2-3bd2-ae49-6de6957c8f0b.png', 5000, 2, 100.00),
-('IJ-789-KL', 3, 3, 'https://www.largus.fr/images/images/2019-bmw-x5-hyrbide-45e-iperformance-blanc-10.jpg', 15000, 3, 150.00);
+INSERT INTO `voitures` (`immatriculation`, `id_marque`, `id_modele`, `kilometrage`, `id_categorie`, `prix`) VALUES
+('AB-123-CD', 1, 1, 10200, 1, 50.00),
+('EF-456-GH', 2, 2, 5000, 2, 100.00),
+('IJ-789-KL', 3, 3, 15000, 3, 150.00);
 
 --
 -- Index pour les tables déchargées
@@ -280,6 +301,13 @@ ALTER TABLE `choixoptions`
 ALTER TABLE `clients`
   ADD PRIMARY KEY (`id_client`),
   ADD KEY `id_type_client` (`id_type_client`);
+
+--
+-- Index pour la table `images`
+--
+ALTER TABLE `images`
+  ADD PRIMARY KEY (`id_image`),
+  ADD KEY `immatriculation` (`immatriculation`);
 
 --
 -- Index pour la table `louer`
@@ -361,6 +389,12 @@ ALTER TABLE `clients`
   MODIFY `id_client` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
+-- AUTO_INCREMENT pour la table `images`
+--
+ALTER TABLE `images`
+  MODIFY `id_image` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
 -- AUTO_INCREMENT pour la table `louer`
 --
 ALTER TABLE `louer`
@@ -418,6 +452,12 @@ ALTER TABLE `choixoptions`
 --
 ALTER TABLE `clients`
   ADD CONSTRAINT `clients_ibfk_1` FOREIGN KEY (`id_type_client`) REFERENCES `typesclient` (`id_type_client`);
+
+--
+-- Contraintes pour la table `images`
+--
+ALTER TABLE `images`
+  ADD CONSTRAINT `images_ibfk_1` FOREIGN KEY (`immatriculation`) REFERENCES `voitures` (`immatriculation`) ON DELETE CASCADE;
 
 --
 -- Contraintes pour la table `louer`
