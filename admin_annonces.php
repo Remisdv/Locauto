@@ -63,16 +63,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_vehicle'])) {
     $marque_id = $_POST['marque'];
     $modele_id = $_POST['modele'];
     $immatriculation = $_POST['immatriculation'];
-    $image = $_POST['image'];
+    $images = explode(',', $_POST['images']); // Convert string to array
     $kilometrage = $_POST['kilometrage'];
     $categorie_id = $_POST['categorie'];
     $prix = $_POST['prix'];
 
     if ($marque_id && $modele_id && $categorie_id) {
-        $sql = "INSERT INTO voitures (immatriculation, id_marque, id_modele, image, kilometrage, id_categorie, prix) 
-                VALUES ('$immatriculation', '$marque_id', '$modele_id', '$image', '$kilometrage', '$categorie_id', '$prix')";
+        $sql = "INSERT INTO voitures (immatriculation, id_marque, id_modele, kilometrage, id_categorie, prix) 
+                VALUES ('$immatriculation', '$marque_id', '$modele_id', '$kilometrage', '$categorie_id', '$prix')";
 
         if ($conn->query($sql) === TRUE) {
+            foreach ($images as $image) {
+                $sql_image = "INSERT INTO images (immatriculation, image_url) VALUES ('$immatriculation', '$image')";
+                $conn->query($sql_image);
+            }
             $message = "Véhicule ajouté avec succès.";
         } else {
             $message = "Erreur: " . $sql . "<br>" . $conn->error;
@@ -85,13 +89,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_vehicle'])) {
 // Traitement de la modification d'un véhicule
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_vehicle'])) {
     $id_voiture = $_POST['id_voiture'];
-    $image = $_POST['image'];
+    $images = explode(',', $_POST['images']); // Convert string to array
     $kilometrage = $_POST['kilometrage'];
     $prix = $_POST['prix'];
 
-    $sql = "UPDATE voitures SET image='$image', kilometrage='$kilometrage', prix='$prix' WHERE immatriculation='$id_voiture'";
+    $sql = "UPDATE voitures SET kilometrage='$kilometrage', prix='$prix' WHERE immatriculation='$id_voiture'";
 
     if ($conn->query($sql) === TRUE) {
+        // Delete old images and insert new ones
+        $conn->query("DELETE FROM images WHERE immatriculation='$id_voiture'");
+        foreach ($images as $image) {
+            $sql_image = "INSERT INTO images (immatriculation, image_url) VALUES ('$id_voiture', '$image')";
+            $conn->query($sql_image);
+        }
         $message = "Véhicule mis à jour avec succès.";
     } else {
         $message = "Erreur: " . $sql . "<br>" . $conn->error;
@@ -105,9 +115,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_vehicle'])) {
     $sql = "DELETE FROM voitures WHERE immatriculation='$immatriculation'";
 
     if ($conn->query($sql) === TRUE) {
+        $conn->query("DELETE FROM images WHERE immatriculation='$immatriculation'");
         $message = "Véhicule supprimé avec succès.";
     } else {
         $message = "Erreur: " . $sql . "<br>" . $conn->error;
+    }
+}
+
+// Traitement de l'ajout d'une image
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_image'])) {
+    $immatriculation = $_POST['immatriculation'];
+    $image_url = $_POST['image_url'];
+
+    $sql_image = "INSERT INTO images (immatriculation, image_url) VALUES ('$immatriculation', '$image_url')";
+
+    if ($conn->query($sql_image) === TRUE) {
+        $message = "Image ajoutée avec succès.";
+    } else {
+        $message = "Erreur: " . $sql_image . "<br>" . $conn->error;
+    }
+}
+
+// Traitement de la suppression d'une image
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_image'])) {
+    $image_id = $_POST['image_id'];
+
+    $sql_image = "DELETE FROM images WHERE id_image='$image_id'";
+
+    if ($conn->query($sql_image) === TRUE) {
+        $message = "Image supprimée avec succès.";
+    } else {
+        $message = "Erreur: " . $sql_image . "<br>" . $conn->error;
     }
 }
 
@@ -124,7 +162,7 @@ $sql_categories = "SELECT * FROM categories";
 $result_categories = $conn->query($sql_categories);
 
 // Récupération de tous les véhicules
-$sql_voitures = "SELECT v.immatriculation, m.marque, mo.modele, v.image, v.kilometrage, c.categorie, v.prix
+$sql_voitures = "SELECT v.immatriculation, m.marque, mo.modele, v.kilometrage, c.categorie, v.prix
                  FROM voitures v
                  JOIN marques m ON v.id_marque = m.id_marque
                  JOIN modeles mo ON v.id_modele = mo.id_modele
@@ -210,8 +248,8 @@ $result_options = $conn->query($sql_options);
                 </select>
                 <label for="immatriculation">Immatriculation</label>
                 <input type="text" id="immatriculation" name="immatriculation" required>
-                <label for="image">Image (URL)</label>
-                <input type="text" id="image" name="image" required>
+                <label for="images">Images (URL, séparées par des virgules)</label>
+                <input type="text" id="images" name="images" required>
                 <label for="kilometrage">Kilométrage</label>
                 <input type="number" id="kilometrage" name="kilometrage" required>
                 <label for="categorie">Catégorie</label>
@@ -250,15 +288,31 @@ $result_options = $conn->query($sql_options);
                                 <td><?php echo $row['immatriculation']; ?></td>
                                 <td><?php echo $row['marque']; ?></td>
                                 <td><?php echo $row['modele']; ?></td>
-                                <td><img src="<?php echo $row['image']; ?>" alt="<?php echo $row['modele']; ?>"></td>
+                                <td>
+                                    <?php
+                                    $immatriculation = $row['immatriculation'];
+                                    $sql_images = "SELECT image_url FROM images WHERE immatriculation='$immatriculation' LIMIT 1";
+                                    $result_images = $conn->query($sql_images);
+                                    $image_url = $result_images->fetch_assoc()['image_url'];
+                                    ?>
+                                    <img src="<?php echo $image_url; ?>" alt="<?php echo $row['modele']; ?>" style="width: 100px; height: auto;">
+                                </td>
                                 <td><?php echo $row['kilometrage']; ?></td>
                                 <td><?php echo $row['categorie']; ?></td>
                                 <td><?php echo $row['prix']; ?> €</td>
                                 <td>
                                     <form action="admin_annonces.php" method="POST" class="actions-form">
                                         <input type="hidden" name="id_voiture" value="<?php echo $row['immatriculation']; ?>">
-                                        <label for="image">Image (URL)</label>
-                                        <input type="text" id="image" name="image" value="<?php echo $row['image']; ?>" required>
+                                        <label for="images">Images (URL, séparées par des virgules)</label>
+                                        <input type="text" id="images" name="images" value="<?php
+                                            $sql_images = "SELECT image_url FROM images WHERE immatriculation='$immatriculation'";
+                                            $result_images = $conn->query($sql_images);
+                                            $images = [];
+                                            while ($image_row = $result_images->fetch_assoc()) {
+                                                $images[] = $image_row['image_url'];
+                                            }
+                                            echo implode(',', $images);
+                                        ?>" required>
                                         <label for="kilometrage">Kilométrage</label>
                                         <input type="number" id="kilometrage" name="kilometrage" value="<?php echo $row['kilometrage']; ?>" required>
                                         <label for="prix">Prix</label>
@@ -283,6 +337,52 @@ $result_options = $conn->query($sql_options);
                 <label for="immatriculation">Immatriculation</label>
                 <input type="text" id="immatriculation" name="immatriculation" required>
                 <button type="submit" name="delete_vehicle">Supprimer</button>
+            </form>
+        </div>
+
+        <div class="form-section">
+            <h3>Gérer les Images des Véhicules</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID Image</th>
+                        <th>Immatriculation</th>
+                        <th>URL de l'image</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $sql_images_all = "SELECT id_image, immatriculation, image_url FROM images";
+                    $result_images_all = $conn->query($sql_images_all);
+                    if ($result_images_all->num_rows > 0): ?>
+                        <?php while($row = $result_images_all->fetch_assoc()): ?>
+                            <tr>
+                                <td><?php echo $row['id_image']; ?></td>
+                                <td><?php echo $row['immatriculation']; ?></td>
+                                <td><img src="<?php echo $row['image_url']; ?>" alt="Image du véhicule" style="width:100px; height:auto;"></td>
+                                <td>
+                                    <form action="admin_annonces.php" method="POST" class="actions-form">
+                                        <input type="hidden" name="image_id" value="<?php echo $row['id_image']; ?>">
+                                        <button type="submit" name="delete_image">Supprimer</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="4">Aucune image trouvée.</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+
+            </table>
+            <form action="admin_annonces.php" method="POST" class="actions-form">
+                <label for="immatriculation">Immatriculation</label>
+                <input type="text" id="immatriculation" name="immatriculation" required>
+                <label for="image_url">URL de l'image</label>
+                <input type="text" id="image_url" name="image_url" required>
+                <button type="submit" name="add_image">Ajouter Image</button>
             </form>
         </div>
 
