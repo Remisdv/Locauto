@@ -36,22 +36,35 @@ session_start();
     </header>
     <div class="banner"></div>
     <div class="container">
-        <section class="filters">
-            <select id="searchOption">
-                <option value="marque_modele">Marque et Modèle</option>
-                <option value="immatriculation">Immatriculation</option>
-            </select>
-            <select id="categoryOption">
-                <option value="all">Toutes les catégories</option>
-                <option value="Economique">Economique</option>
-                <option value="Standard">Standard</option>
-                <option value="Luxe">Luxe</option>
-            </select>
-            <select id="sortOption">
-                <option value="none">Trier par</option>
-                <option value="kilometrage_asc">Kilométrage croissant</option>
-                <option value="kilometrage_desc">Kilométrage décroissant</option>
-            </select>
+        <section class="section1">
+            <div class="filters">
+                <div class="searchOption-container">
+                    <label for="searchOption">Recherche:</label>
+                    <select id="searchOption">
+                        <option value="marque_modele">Marque et Modèle</option>
+                        <option value="immatriculation">Immatriculation</option>
+                    </select>
+                </div>
+                <div class="categoryOption-container">
+                    <label for="categoryOption">Categorie:</label>
+                    <select id="categoryOption">
+                        <option value="all">Toutes les catégories</option>
+                        <option value="Economique">Economique</option>
+                        <option value="Standard">Standard</option>
+                        <option value="Luxe">Luxe</option>
+                    </select>
+                </div>
+                <div class="sortOption-container">
+                    <label for="sortOption">Trier par:</label>
+                    <select id="sortOption">
+                        <option value="none">Aucun</option>
+                        <option value="kilometrage_asc">Kilométrage croissant</option>
+                        <option value="kilometrage_desc">Kilométrage décroissant</option>
+                        <option value="prix_asc">Prix croissant</option>
+                        <option value="prix_desc">Prix décroissant</option>
+                    </select>
+                </div>
+            </div>
         </section>
 
         <section class="section2">

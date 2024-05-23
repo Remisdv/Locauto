@@ -41,7 +41,14 @@ header nav ul li a:hover {
 
 .container {
     display: grid;
-    grid-template-columns: 1/3fr 2/3fr;
+    grid-template-columns: 1fr 3fr;
+}
+.container .left {
+    grid-column: 1;
+}
+
+.container .right {
+    grid-column: 2;
 }
 
 /* Dropdown Menu Styles */
@@ -121,6 +128,13 @@ header nav ul li a:hover {
     box-sizing: border-box;
     background-color: #ffffff;
     color: rgb(0, 0, 0);
+}
+/*divs Filters*/
+.searchOption-container, .categoryOption-container, .sortOption-container {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    margin-bottom: 10px;
 }
 
 .search-bar input[type="text"] {
