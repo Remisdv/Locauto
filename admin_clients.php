@@ -46,6 +46,8 @@ $result_clients = $conn->query($sql_clients);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administration - Gérer les Clients</title>
     <link rel="stylesheet" href="CSS/styles.css">
+    <link rel="stylesheet" href="CSS/admin_clients.css">
+
 </head>
 <body>
     <header>

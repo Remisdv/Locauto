@@ -1,0 +1,94 @@
+
+.container {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+}
+.container .left {
+    grid-column: 1;
+}
+
+.container .right {
+    grid-column: 2;
+}
+
+/* Banner Styles */
+.banner {
+    width: 100%;
+    height: 330px;
+    background-image: url('images/banner.png'); /* Replace with your local banner image */
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.banner h1 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 3em;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Filter and Search Bar Styles */
+.filters, .search-bar {
+    text-align: center;
+    margin: 20px 0;
+    margin-left: 10px;
+}
+
+.filters select, .search-bar input[type="text"] {
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 10px;
+    width: 300px;
+    max-width: 90%;
+    box-sizing: border-box;
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
+}
+
+label {
+    margin: 20px;
+    font-weight: bold;
+}
+
+header {
+    background-color: #333;
+    color: white;
+    padding: 15px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    position: fixed;
+    z-index: 1000;
+}
+
+.prev {
+    position: absolute;
+    top: 80%; /* Ajustez cette valeur pour déplacer les flèches plus haut ou plus bas */
+    left: 0;
+}
+
+.next {
+    position: absolute;
+    top: 80%; /* Ajustez cette valeur pour déplacer les flèches plus haut ou plus bas */
+    right: 0;
+}
+
+.image-slider .prev, .image-slider .next {
+    cursor: pointer;
+    position: absolute;
+    width: auto;
+    /* margin-top: -22px; */
+    padding: 16px;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    transition: 0.6s ease;
+    border-radius: 0 3px 3px 0;
+    user-select: none;
+    background-color: rgba(0,0,0,0.1);
+}

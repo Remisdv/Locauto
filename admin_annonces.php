@@ -182,6 +182,7 @@ $result_options = $conn->query($sql_options);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administration - Gérer les Annonces</title>
     <link rel="stylesheet" href="CSS/styles.css">
+    <link rel="stylesheet" href="CSS/admin_annonces.css">
 </head>
 <body>
     <header>
