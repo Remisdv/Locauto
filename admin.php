@@ -74,6 +74,7 @@ $result_reservations = $conn->query($sql_reservations);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administration</title>
     <link rel="stylesheet" href="CSS/styles.css">
+    <link rel="stylesheet" href="CSS/admin.css">
 </head>
 <body>
 <header>
