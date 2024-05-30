@@ -15,12 +15,11 @@ session_start();
         <nav>
             <ul>
                 <li><a href="index.php">Accueil</a></li>
-                <li><a href="#">Véhicules</a></li>
-                <li><a href="#">Contact</a></li>
                 <li class="menu-dropdown">
                     <a href="javascript:void(0)" class="dropbtn"><?php echo isset($_SESSION['user_id']) ? $_SESSION['username'] : 'Compte'; ?></a>
                     <div class="dropdown-content">
                         <?php if (isset($_SESSION['user_id'])): ?>
+                            <a href="client.php">Tableau de Bord</a>
                             <?php if (isset($_SESSION['is_admin']) && $_SESSION['is_admin']): ?>
                                 <a href="admin.php">Administration</a>
                             <?php endif; ?>

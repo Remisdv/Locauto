@@ -66,7 +66,8 @@ $conn->close();
         function calculatePrice() {
             const pricePer100Km = <?php echo $vehicle['prix']; ?>;
             const kilometres = document.getElementById('kilometres').value;
-            const days = document.getElementById('days').value;
+            const startDate = new Date(document.getElementById('start_date').value);
+            const endDate = new Date(document.getElementById('end_date').value);
             const options = document.querySelectorAll('input[name="options[]"]:checked');
             let totalPrice = (pricePer100Km / 100) * kilometres;
 
@@ -74,6 +75,9 @@ $conn->close();
             options.forEach(option => {
                 totalPrice += parseFloat(option.dataset.price);
             });
+
+            // Calculer la durée en jours
+            const days = Math.round((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
 
             // Ajouter le coût supplémentaire par jour
             totalPrice += totalPrice * 0.5 * days;
@@ -152,8 +156,10 @@ $conn->close();
                     <input type="hidden" name="immatriculation" value="<?php echo $vehicle['immatriculation']; ?>">
                     <label for="kilometres">Kilomètres:</label>
                     <input type="number" id="kilometres" name="kilometres" required>
-                    <label for="days">Durée (jours):</label>
-                    <input type="number" id="days" name="days" required>
+                    <label for="start_date">Date de début:</label>
+                    <input type="date" id="start_date" name="start_date" required>
+                    <label for="end_date">Date de fin:</label>
+                    <input type="date" id="end_date" name="end_date" required>
                     <fieldset>
                         <legend>Options:</legend>
                         <?php foreach ($options as $option): ?>
