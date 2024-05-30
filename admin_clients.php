@@ -50,11 +50,12 @@ $result_clients = $conn->query($sql_clients);
 <body>
     <header>
         <nav>
-            <ul>
+        <ul>
                 <li><a href="index.php">Accueil</a></li>
                 <li><a href="admin.php">Réservations</a></li>
                 <li><a href="admin_annonces.php">Gérer les Annonces</a></li>
                 <li><a href="admin_clients.php">Gérer les Clients</a></li>
+                <li><a href="planing.php">Voir le Planing</a></li>
                 <li><a href="logout.php">Déconnexion</a></li>
             </ul>
         </nav>

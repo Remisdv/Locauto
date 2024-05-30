@@ -12,6 +12,32 @@ if ($conn->connect_error) {
 
 $user_id = $_SESSION['user_id'];
 
+// Handle profile update
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_profile'])) {
+    $nom = $_POST['nom'];
+    $prenom = $_POST['prenom'];
+    $email = $_POST['email'];
+    $password = !empty($_POST['password']) ? password_hash($_POST['password'], PASSWORD_DEFAULT) : null;
+
+    if ($password) {
+        $sql_update = "UPDATE clients SET nom='$nom', prenom='$prenom', email='$email', password='$password' WHERE id_client='$user_id'";
+    } else {
+        $sql_update = "UPDATE clients SET nom='$nom', prenom='$prenom', email='$email' WHERE id_client='$user_id'";
+    }
+
+    if ($conn->query($sql_update) === TRUE) {
+        $_SESSION['username'] = $prenom . ' ' . $nom;
+        $message = "Profil mis à jour avec succès.";
+    } else {
+        $message = "Erreur: " . $sql_update . "<br>" . $conn->error;
+    }
+}
+
+// Fetch user details
+$sql_user = "SELECT nom, prenom, email FROM clients WHERE id_client='$user_id'";
+$result_user = $conn->query($sql_user);
+$user = $result_user->fetch_assoc();
+
 // Fetching latest reservations
 $sql_latest = "SELECT r.id, v.immatriculation, m.marque, mo.modele, r.start_date, r.end_date, r.status, r.days, r.total_price 
                FROM reservations r
@@ -48,8 +74,6 @@ $result_current = $conn->query($sql_current);
         <nav>
             <ul>
                 <li><a href="index.php">Accueil</a></li>
-                <li><a href="#">Véhicules</a></li>
-                <li><a href="#">Contact</a></li>
                 <li class="menu-dropdown">
                     <a href="javascript:void(0)" class="dropbtn"><?php echo $_SESSION['username']; ?></a>
                     <div class="dropdown-content">
@@ -64,6 +88,10 @@ $result_current = $conn->query($sql_current);
     </header>
     <div class="client-dashboard">
         <h2>Bienvenue, <?php echo $_SESSION['username']; ?></h2>
+        <?php if (isset($message)): ?>
+            <p class="message"><?php echo $message; ?></p>
+        <?php endif; ?>
+        
         <div class="reservations-section">
             <h3>Dernières Réservations</h3>
             <table class="reservations-table">
@@ -99,6 +127,7 @@ $result_current = $conn->query($sql_current);
                 </tbody>
             </table>
         </div>
+        
         <div class="current-reservations-section">
             <h3>Réservations en Cours</h3>
             <table class="reservations-table">
@@ -132,6 +161,25 @@ $result_current = $conn->query($sql_current);
                     ?>
                 </tbody>
             </table>
+        </div>
+        
+        <div class="profile-update-section">
+            <h3>Mettre à jour le profil</h3>
+            <form action="client.php" method="POST">
+                <label for="nom">Nom:</label>
+                <input type="text" id="nom" name="nom" value="<?php echo $user['nom']; ?>" required>
+                
+                <label for="prenom">Prénom:</label>
+                <input type="text" id="prenom" name="prenom" value="<?php echo $user['prenom']; ?>" required>
+                
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" value="<?php echo $user['email']; ?>" required>
+                
+                <label for="password">Mot de passe (laisser vide pour ne pas changer):</label>
+                <input type="password" id="password" name="password">
+                
+                <button type="submit" name="update_profile">Mettre à jour</button>
+            </form>
         </div>
     </div>
 </body>

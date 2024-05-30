@@ -61,7 +61,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_reservation']))
 }
 
 // Récupération de toutes les réservations
-$sql_reservations = "SELECT r.id, r.immatriculation, r.kilometres, r.days, r.total_price, r.status, c.nom, c.prenom
+$sql_reservations = "SELECT r.id, r.immatriculation, r.kilometres, r.days, r.total_price, r.status, r.start_date, r.end_date, c.nom, c.prenom
                      FROM reservations r
                      JOIN clients c ON r.id_client = c.id_client";
 $result_reservations = $conn->query($sql_reservations);
@@ -78,13 +78,14 @@ $result_reservations = $conn->query($sql_reservations);
 <body>
 <header>
     <nav>
-        <ul>
-            <li><a href="index.php">Accueil</a></li>
-            <li><a href="admin.php">Réservations</a></li>
-            <li><a href="admin_annonces.php">Gérer les Annonces</a></li>
-            <li><a href="admin_clients.php">Gérer les Clients</a></li>
-            <li><a href="logout.php">Déconnexion</a></li>
-        </ul>
+    <ul>
+                <li><a href="index.php">Accueil</a></li>
+                <li><a href="admin.php">Réservations</a></li>
+                <li><a href="admin_annonces.php">Gérer les Annonces</a></li>
+                <li><a href="admin_clients.php">Gérer les Clients</a></li>
+                <li><a href="planing.php">Voir le Planing</a></li>
+                <li><a href="logout.php">Déconnexion</a></li>
+            </ul>
     </nav>
 </header>
 
@@ -98,10 +99,12 @@ $result_reservations = $conn->query($sql_reservations);
             <table>
                 <thead>
                     <tr>
-                        <th>ID</th>
+
                         <th>Client</th>
                         <th>Immatriculation</th>
                         <th>Kilomètres</th>
+                        <th>Date Début</th>
+                        <th>Date Fin</th>
                         <th>Durée (jours)</th>
                         <th>Options</th>
                         <th>Prix Total</th>
@@ -113,10 +116,12 @@ $result_reservations = $conn->query($sql_reservations);
                     <?php if ($result_reservations->num_rows > 0): ?>
                         <?php while($row = $result_reservations->fetch_assoc()): ?>
                             <tr>
-                                <td><?php echo $row['id']; ?></td>
+                                
                                 <td><?php echo $row['nom'] . " " . $row['prenom']; ?></td>
                                 <td><?php echo $row['immatriculation']; ?></td>
                                 <td><?php echo $row['kilometres']; ?></td>
+                                <td><?php echo $row['start_date']; ?></td>
+                                <td><?php echo $row['end_date']; ?></td>
                                 <td><?php echo $row['days']; ?></td>
                                 <td>
                                     <?php
@@ -160,7 +165,7 @@ $result_reservations = $conn->query($sql_reservations);
                         <?php endwhile; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="9">Aucune réservation trouvée.</td>
+                            <td colspan="11">Aucune réservation trouvée.</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
