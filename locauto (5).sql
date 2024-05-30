@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : jeu. 23 mai 2024 à 10:11
+-- Généré le : jeu. 30 mai 2024 à 15:25
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -88,8 +88,9 @@ CREATE TABLE `clients` (
 INSERT INTO `clients` (`id_client`, `id_type_client`, `nom`, `prenom`, `adresse`, `email`, `password`, `is_admin`) VALUES
 (1, 1, 'Dupont', 'Jean', '123 Rue de la République', '', '', 0),
 (2, 2, 'Durand', 'Marie', '456 Avenue des Champs', '', '', 0),
-(3, 1, 'Lhuillier', 'Remi', '6 rue des trente', 'tgl@gmail.com', '$2y$10$XEH9igf5TldF1pSUxMoZ4ehGKr2IHnm/q7N6EICfu/OshX.3Bjwp2', 1),
-(4, 1, 'Enzo', 'Deca', '11 rue', 'tgl2@gmail.com', '$2y$10$0k7.spbuNko9L2bqOzKxceYJkw5xasmO1HoBqTlNh.c79Ghyjax2a', 0);
+(3, 1, 'Lhuillier', 'Remi', '6 rue des trente', 'tgl@gmail.com', '$2y$10$a.A5vSWnu2EPHeJyrTg6Z.Lo0LdDtUqvniXzn7iTPlg0suUEquPmq', 1),
+(4, 1, 'Enzo', 'Deca', '11 rue', 'tgl2@gmail.com', '$2y$10$0k7.spbuNko9L2bqOzKxceYJkw5xasmO1HoBqTlNh.c79Ghyjax2a', 0),
+(5, 1, 'Lhuillier', 'remi', '11 rue louis arragon', 'tgl3@gmail.com', '$2y$10$/CoKdfE9InHmOAJtQumJBu5MQ889OVyB876JWWqGvHxvh3xVhnM6O', 0);
 
 -- --------------------------------------------------------
 
@@ -111,7 +112,9 @@ INSERT INTO `images` (`id_image`, `immatriculation`, `image_url`) VALUES
 (1, 'AB-123-CD', 'https://www.largus.fr/images/styles/max_1300x1300/public/images/trophe-es-argus-2019-02_1.jpg?itok=t0qCk1H8'),
 (2, 'EF-456-GH', 'https://www.gpas-cache.ford.com/guid/93030b0b-72c2-3bd2-ae49-6de6957c8f0b.png'),
 (3, 'IJ-789-KL', 'https://www.largus.fr/images/images/2019-bmw-x5-hyrbide-45e-iperformance-blanc-10.jpg'),
-(4, 'AB-123-CD', 'https://scene7.toyota.eu/is/image/toyotaeurope/cor0003a_23_GR-SPORT_Gris-Mineral_03-2023:Medium-Landscape?ts=0&resMode=sharp2&op_usm=1.75,0.3,2,0');
+(5, 'AB-123-CD', 'https://scene7.toyota.eu/is/image/toyotaeurope/cor0003a_23_GR-SPORT_Gris-Mineral_03-2023:Medium-Landscape?ts=0&resMode=sharp2&op_usm=1.75,0.3,2,0'),
+(6, 'AB-123-CD', 'https://scene7.toyota.eu/is/image/toyotaeurope/cor0003a_23_GR-SPORT_Gris-Mineral_03-2023:Medium-Landscape?ts=0&resMode=sharp2&op_usm=1.75,0.3,2,0'),
+(7, 'XY-542-FT', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsEuuQhntMbOZEBzhlN8FjRafm_c6QD2G--j8duDC-2A&s');
 
 -- --------------------------------------------------------
 
@@ -155,7 +158,8 @@ CREATE TABLE `marques` (
 INSERT INTO `marques` (`id_marque`, `marque`) VALUES
 (1, 'Toyota'),
 (2, 'Ford'),
-(3, 'BMW');
+(3, 'BMW'),
+(4, 'BMW');
 
 -- --------------------------------------------------------
 
@@ -175,7 +179,8 @@ CREATE TABLE `modeles` (
 INSERT INTO `modeles` (`id_modele`, `modele`) VALUES
 (1, 'Corolla'),
 (2, 'Focus'),
-(3, 'X5');
+(3, 'X5'),
+(4, 'M4');
 
 -- --------------------------------------------------------
 
@@ -212,15 +217,20 @@ CREATE TABLE `reservations` (
   `kilometres` int(11) DEFAULT NULL,
   `days` int(11) NOT NULL,
   `total_price` decimal(10,2) NOT NULL,
-  `status` enum('pending','accepted','rejected') DEFAULT 'pending'
+  `status` enum('pending','accepted','rejected') DEFAULT 'pending',
+  `start_date` date DEFAULT NULL,
+  `end_date` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Déchargement des données de la table `reservations`
 --
 
-INSERT INTO `reservations` (`id`, `id_client`, `immatriculation`, `kilometres`, `days`, `total_price`, `status`) VALUES
-(10, 3, 'AB-123-CD', 100, 1, 0.00, 'pending');
+INSERT INTO `reservations` (`id`, `id_client`, `immatriculation`, `kilometres`, `days`, `total_price`, `status`, `start_date`, `end_date`) VALUES
+(16, 3, 'AB-123-CD', 100, 2, 100.00, 'accepted', '2024-05-01', '2024-05-02'),
+(17, 3, 'AB-123-CD', 100, 1, 75.00, 'accepted', '2024-05-30', '2024-05-30'),
+(18, 3, 'AB-123-CD', 100, 3, 125.00, 'pending', '2024-05-01', '2024-05-03'),
+(19, 3, 'XY-542-FT', 100, 3, 750.00, 'pending', '2024-05-30', '2024-06-01');
 
 -- --------------------------------------------------------
 
@@ -273,9 +283,10 @@ CREATE TABLE `voitures` (
 --
 
 INSERT INTO `voitures` (`immatriculation`, `id_marque`, `id_modele`, `kilometrage`, `id_categorie`, `prix`) VALUES
-('AB-123-CD', 1, 1, 10200, 1, 50.00),
-('EF-456-GH', 2, 2, 5000, 2, 100.00),
-('IJ-789-KL', 3, 3, 15000, 3, 150.00);
+('AB-123-CD', 1, 1, 10600, 1, 50.00),
+('EF-456-GH', 2, 2, 5100, 2, 100.00),
+('IJ-789-KL', 3, 3, 15000, 3, 150.00),
+('XY-542-FT', 4, 4, 10000, 4, 300.00);
 
 --
 -- Index pour les tables déchargées
@@ -386,13 +397,13 @@ ALTER TABLE `choixoptions`
 -- AUTO_INCREMENT pour la table `clients`
 --
 ALTER TABLE `clients`
-  MODIFY `id_client` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_client` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT pour la table `images`
 --
 ALTER TABLE `images`
-  MODIFY `id_image` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_image` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT pour la table `louer`
@@ -404,13 +415,13 @@ ALTER TABLE `louer`
 -- AUTO_INCREMENT pour la table `marques`
 --
 ALTER TABLE `marques`
-  MODIFY `id_marque` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_marque` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT pour la table `modeles`
 --
 ALTER TABLE `modeles`
-  MODIFY `id_modele` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_modele` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT pour la table `options`
@@ -422,13 +433,13 @@ ALTER TABLE `options`
 -- AUTO_INCREMENT pour la table `reservations`
 --
 ALTER TABLE `reservations`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT pour la table `reservation_options`
 --
 ALTER TABLE `reservation_options`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT pour la table `typesclient`
