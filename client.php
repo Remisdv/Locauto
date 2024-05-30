@@ -13,7 +13,7 @@ if ($conn->connect_error) {
 $user_id = $_SESSION['user_id'];
 
 // Fetching latest reservations
-$sql_latest = "SELECT r.id, v.immatriculation, m.marque, mo.modele, r.status, r.days, r.total_price 
+$sql_latest = "SELECT r.id, v.immatriculation, m.marque, mo.modele, r.start_date, r.end_date, r.status, r.days, r.total_price 
                FROM reservations r
                JOIN voitures v ON r.immatriculation = v.immatriculation
                JOIN marques m ON v.id_marque = m.id_marque
@@ -23,7 +23,7 @@ $sql_latest = "SELECT r.id, v.immatriculation, m.marque, mo.modele, r.status, r.
                LIMIT 5";
 
 // Fetching ongoing reservations
-$sql_current = "SELECT r.id, v.immatriculation, m.marque, mo.modele, r.status, r.days, r.total_price 
+$sql_current = "SELECT r.id, v.immatriculation, m.marque, mo.modele, r.start_date, r.end_date, r.status, r.days, r.total_price 
                 FROM reservations r
                 JOIN voitures v ON r.immatriculation = v.immatriculation
                 JOIN marques m ON v.id_marque = m.id_marque
@@ -69,8 +69,10 @@ $result_current = $conn->query($sql_current);
             <table class="reservations-table">
                 <thead>
                     <tr>
-                        
+                        <th>ID Réservation</th>
                         <th>Véhicule</th>
+                        <th>Date Début</th>
+                        <th>Date Fin</th>
                         <th>Statut</th>
                         <th>Durée (jours)</th>
                         <th>Prix Total (€)</th>
@@ -81,21 +83,57 @@ $result_current = $conn->query($sql_current);
                     if ($result_latest->num_rows > 0) {
                         while ($row = $result_latest->fetch_assoc()) {
                             echo "<tr>
-                                    
+                                    <td>{$row['id']}</td>
                                     <td>{$row['marque']} {$row['modele']}</td>
+                                    <td>{$row['start_date']}</td>
+                                    <td>{$row['end_date']}</td>
                                     <td>{$row['status']}</td>
                                     <td>{$row['days']}</td>
                                     <td>{$row['total_price']}</td>
                                   </tr>";
                         }
                     } else {
-                        echo "<tr><td colspan='5'>Aucune réservation récente</td></tr>";
+                        echo "<tr><td colspan='7'>Aucune réservation récente</td></tr>";
                     }
                     ?>
                 </tbody>
             </table>
         </div>
-        
+        <div class="current-reservations-section">
+            <h3>Réservations en Cours</h3>
+            <table class="reservations-table">
+                <thead>
+                    <tr>
+                        <th>ID Réservation</th>
+                        <th>Véhicule</th>
+                        <th>Date Début</th>
+                        <th>Date Fin</th>
+                        <th>Statut</th>
+                        <th>Durée (jours)</th>
+                        <th>Prix Total (€)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    if ($result_current->num_rows > 0) {
+                        while ($row = $result_current->fetch_assoc()) {
+                            echo "<tr>
+                                    <td>{$row['id']}</td>
+                                    <td>{$row['marque']} {$row['modele']}</td>
+                                    <td>{$row['start_date']}</td>
+                                    <td>{$row['end_date']}</td>
+                                    <td>{$row['status']}</td>
+                                    <td>{$row['days']}</td>
+                                    <td>{$row['total_price']}</td>";
+                        }
+                    } else {
+                        echo "<tr><td colspan='7'>Aucune réservation en cours</td></tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </body>
 </html>
 

@@ -49,8 +49,8 @@ foreach ($options as $option_id) {
 }
 
 // Insert reservation into database
-$sql_reservation = "INSERT INTO reservations (id_client, immatriculation, kilometres, days, total_price, status) 
-                    VALUES ('$user_id', '$immatriculation', '$kilometres', '$days', '$total_price', '$status')";
+$sql_reservation = "INSERT INTO reservations (id_client, immatriculation, kilometres, days, total_price, status, start_date, end_date) 
+                    VALUES ('$user_id', '$immatriculation', '$kilometres', '$days', '$total_price', '$status', '$start_date', '$end_date')";
 
 if ($conn->query($sql_reservation) === TRUE) {
     $reservation_id = $conn->insert_id;
@@ -63,7 +63,7 @@ if ($conn->query($sql_reservation) === TRUE) {
 
     echo "Réservation effectuée avec succès!";
     // Redirect to a success page or the client dashboard
-    // header('Location: client.php');
+    header('Location: client.php');
 } else {
     echo "Erreur: " . $sql_reservation . "<br>" . $conn->error;
 }
