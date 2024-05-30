@@ -40,14 +40,6 @@ header nav ul li a:hover {
     color: #dcdcdc;
 }
 
-<<<<<<< Updated upstream
-.container {
-    display: grid;
-    grid-template-columns: 1/3fr 2/3fr;
-}
-
-=======
->>>>>>> Stashed changes
 /* Dropdown Menu Styles */
 .menu-dropdown {
     display: inline-block;
@@ -89,42 +81,12 @@ header nav ul li a:hover {
 }
 
 
-<<<<<<< Updated upstream
-.banner h1 {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
-    font-size: 3em;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-}
-
-/* Filter and Search Bar Styles */
-.filters, .search-bar {
-    text-align: center;
-    margin: 20px 0;
-}
-
-.filters select, .search-bar input[type="text"] {
-    padding: 12px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    margin-right: 10px;
-    width: 300px;
-    max-width: 90%;
-    box-sizing: border-box;
-    background-color: #ffffff;
-    color: rgb(0, 0, 0);
-=======
 /*divs Filters*/
 .searchOption-container, .categoryOption-container, .sortOption-container {
     display: flex;
     flex-direction: column;
     align-items: start;
     margin-bottom: 10px;
->>>>>>> Stashed changes
 }
 
 .search-bar input[type="text"] {
