@@ -8,12 +8,15 @@ body {
 
 }
 
+
 header {
     background-color: #333;
     color: white;
-    padding: 15px 0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     position: fixed;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 15px 0;
+    top: 0;
+    width: 100%;
 }
 
 header nav ul {
@@ -257,6 +260,17 @@ header nav ul li {
     background-color: #1e1e1e;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+.admin-containerspe {
+    max-width: 1000px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #1e1e1e;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+.admin-title{
+    color: white;
 }
 
 .admin-container h2 {
