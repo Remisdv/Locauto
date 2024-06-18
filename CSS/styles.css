@@ -134,7 +134,7 @@ header nav ul li a:hover {
 .vehicle-card p {
     margin: 5px 0;
     font-size: 1em;
-    color: #b0b0b0;
+    color: #ffffff;
 }
 
 /* Vehicle Details Styles */
@@ -450,6 +450,6 @@ table td button:hover {
 }
 
 .image-slider .prev:hover, .image-slider .next:hover {
-    background-color: rgba(0,0,0,0.6);
+    background-color: rgba(0,0,0,0);
 }
 

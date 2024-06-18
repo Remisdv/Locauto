@@ -15,10 +15,7 @@ function applyFilters() {
         var text;
         if (searchOption === 'marque_modele') {
             text = card.querySelector('h2').textContent.toLowerCase();
-        } else if (searchOption === 'immatriculation') {
-            text = card.querySelector('p:nth-of-type(1)').textContent.toLowerCase();
-        }
-
+        } 
         var category = card.getAttribute('data-categorie').toLowerCase();
         var matchesCategory = (categoryOption === 'all') || (category === categoryOption.toLowerCase());
 

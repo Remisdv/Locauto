@@ -68,13 +68,13 @@ header {
 
 .prev {
     position: absolute;
-    top: 80%; /* Ajustez cette valeur pour déplacer les flèches plus haut ou plus bas */
+    top: 50%; /* Ajustez cette valeur pour déplacer les flèches plus haut ou plus bas */
     left: 0;
 }
 
 .next {
     position: absolute;
-    top: 80%; /* Ajustez cette valeur pour déplacer les flèches plus haut ou plus bas */
+    top: 50%; /* Ajustez cette valeur pour déplacer les flèches plus haut ou plus bas */
     right: 0;
 }
 
@@ -91,4 +91,78 @@ header {
     border-radius: 0 3px 3px 0;
     user-select: none;
     background-color: rgba(0,0,0,0.1);
+}
+.filters {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.filters label {
+    margin-right: 10px;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.search-bar input[type="text"] {
+    padding: 10px;
+    width: 300px;
+    margin-right: 10px;
+}
+
+.search-bar button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.search-bar button:hover {
+    background-color: #45a049;
+}
+
+
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.pagination a {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    margin: 0 5px;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.pagination a:hover {
+    background-color: #45a049;
+}
+
+.pagination .prev-button {
+    margin-right: 10px;
+}
+
+.pagination .next-button {
+    margin-left: 10px;
 }
