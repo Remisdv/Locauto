@@ -67,12 +67,14 @@ header {
 }
 
 .prev {
+    border: none;
     position: absolute;
     top: 80%; /* Ajustez cette valeur pour déplacer les flèches plus haut ou plus bas */
     left: 0;
 }
 
 .next {
+    border: none;
     position: absolute;
     top: 80%; /* Ajustez cette valeur pour déplacer les flèches plus haut ou plus bas */
     right: 0;
