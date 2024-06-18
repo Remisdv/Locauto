@@ -79,7 +79,9 @@ header nav ul li a:hover {
 .menu-dropdown:hover .dropdown-content {
     display: block;
 }
-
+header nav ul li {
+    position: relative;
+}
 
 /*divs Filters*/
 .searchOption-container, .categoryOption-container, .sortOption-container {
