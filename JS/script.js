@@ -104,3 +104,34 @@ function redirectToDetails(element) {
 }
 
 
+
+function updateFilters() {
+    const searchInput = document.getElementById('searchInput').value;
+    const searchOption = document.getElementById('searchOption').value;
+    const categoryOption = document.getElementById('categoryOption').value;
+    const sortOption = document.getElementById('sortOption').value;
+
+    const url = new URL(window.location.href);
+    url.searchParams.set('search', searchInput);
+    url.searchParams.set('searchOption', searchOption);
+    url.searchParams.set('categoryOption', categoryOption);
+    url.searchParams.set('sortOption', sortOption);
+
+    window.location.href = url.toString();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+
+    searchInput.addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();  // Empêche le formulaire de soumettre si nécessaire
+            updateFilters();
+        }
+    });
+
+    searchInput.addEventListener('blur', updateFilters);
+    document.getElementById('searchOption').addEventListener('change', updateFilters);
+    document.getElementById('categoryOption').addEventListener('change', updateFilters);
+    document.getElementById('sortOption').addEventListener('change', updateFilters);
+});

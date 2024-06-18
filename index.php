@@ -2,7 +2,7 @@
 session_start();
 
 // Nombre de résultats par page
-$results_per_page = 5;
+$results_per_page = 10;
 
 // Se connecter à la base de données
 $conn = new mysqli("localhost", "root", "", "locauto");
@@ -46,7 +46,7 @@ if ($sort_option == 'kilometrage_asc') {
     $order_clause = 'ORDER BY m.marque DESC';
 }
 
-// Déterminer le nombre total de résultats
+// Déterminer le nombre total de résultats sans pagination
 $sql = "SELECT COUNT(*) AS total
         FROM voitures v
         JOIN categories c ON v.id_categorie = c.id_categorie
@@ -232,39 +232,6 @@ if ($result_categories->num_rows > 0) {
         </div>
     </div>
     <script src="JS/script.js"></script>
-    <script>
-    function updateFilters() {
-        const searchInput = document.getElementById('searchInput').value;
-        const searchOption = document.getElementById('searchOption').value;
-        const categoryOption = document.getElementById('categoryOption').value;
-        const sortOption = document.getElementById('sortOption').value;
-
-        const url = new URL(window.location.href);
-        url.searchParams.set('search', searchInput);
-        url.searchParams.set('searchOption', searchOption);
-        url.searchParams.set('categoryOption', categoryOption);
-        url.searchParams.set('sortOption', sortOption);
-
-        window.location.href = url.toString();
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchInput = document.getElementById('searchInput');
-
-        searchInput.addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault();  // Empêche le formulaire de soumettre si nécessaire
-                updateFilters();
-            }
-        });
-
-        searchInput.addEventListener('blur', updateFilters);
-        document.getElementById('searchOption').addEventListener('change', updateFilters);
-        document.getElementById('categoryOption').addEventListener('change', updateFilters);
-        document.getElementById('sortOption').addEventListener('change', updateFilters);
-    });
-</script>
-
 </body>
 </html>
 <?php
