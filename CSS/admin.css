@@ -169,6 +169,11 @@ header nav ul li {
     margin-bottom: 20px;
     color: #dcdcdc;
 }
+.admin-containerspe h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #dcdcdc;
+}
 
 .message {
     text-align: center;

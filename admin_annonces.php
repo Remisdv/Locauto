@@ -197,7 +197,7 @@ $result_options = $conn->query($sql_options);
             </ul>
         </nav>
     </header>
-    <div class="admin-container">
+    <div class="admin-containerspe">
         <h2>Administration - Gérer les Annonces</h2>
         <?php if ($message): ?>
             <p class="message"><?php echo $message; ?></p>

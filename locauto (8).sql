@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : mar. 18 juin 2024 à 13:15
+-- Généré le : mar. 18 juin 2024 à 15:09
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -312,29 +312,30 @@ CREATE TABLE `voitures` (
   `id_modele` int(11) NOT NULL,
   `kilometrage` int(11) NOT NULL,
   `id_categorie` int(11) NOT NULL,
-  `prix` decimal(10,2) NOT NULL
+  `prix` decimal(10,2) NOT NULL,
+  `broken` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Déchargement des données de la table `voitures`
 --
 
-INSERT INTO `voitures` (`immatriculation`, `id_marque`, `id_modele`, `kilometrage`, `id_categorie`, `prix`) VALUES
-('AB-123-CD', 1, 1, 10700, 1, 50.00),
-('EF-456-GH', 2, 2, 5100, 2, 100.00),
-('FR-587-EF', 3, 5, 1000, 2, 50.00),
-('IG-975-FG', 3, 9, 10000, 5, 100.00),
-('IJ-789-KL', 3, 3, 15000, 3, 150.00),
-('PW-571-AP', 3, 11, 10000, 5, 120.00),
-('RT-577-GT', 3, 14, 10000, 3, 140.00),
-('RT-987-MP', 3, 15, 10000, 3, 150.00),
-('TF-687-MP', 5, 18, 10000, 4, 140.00),
-('TR-684-CV', 5, 17, 10000, 2, 80.00),
-('TT-157-981', 4, 12, 10000, 5, 130.00),
-('TY-712-BV', 3, 10, 10000, 5, 110.00),
-('TY-975-MP', 3, 6, 10000, 2, 80.00),
-('XY-542-FT', 4, 4, 10000, 4, 300.00),
-('YT-685-CF', 5, 16, 10000, 2, 70.00);
+INSERT INTO `voitures` (`immatriculation`, `id_marque`, `id_modele`, `kilometrage`, `id_categorie`, `prix`, `broken`) VALUES
+('AB-123-CD', 1, 1, 10700, 1, 50.00, 0),
+('EF-456-GH', 2, 2, 5100, 2, 100.00, 0),
+('FR-587-EF', 3, 5, 1000, 2, 50.00, 0),
+('IG-975-FG', 3, 9, 10000, 5, 100.00, 0),
+('IJ-789-KL', 3, 3, 15000, 3, 150.00, 0),
+('PW-571-AP', 3, 11, 10000, 5, 120.00, 0),
+('RT-577-GT', 3, 14, 10000, 3, 140.00, 0),
+('RT-987-MP', 3, 15, 10000, 3, 150.00, 0),
+('TF-687-MP', 5, 18, 10000, 4, 140.00, 0),
+('TR-684-CV', 5, 17, 10000, 2, 80.00, 0),
+('TT-157-981', 4, 12, 10000, 5, 130.00, 0),
+('TY-712-BV', 3, 10, 10000, 5, 110.00, 0),
+('TY-975-MP', 3, 6, 10000, 2, 80.00, 0),
+('XY-542-FT', 4, 4, 10000, 4, 300.00, 0),
+('YT-685-CF', 5, 16, 10000, 2, 70.00, 0);
 
 --
 -- Index pour les tables déchargées
