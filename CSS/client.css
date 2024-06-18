@@ -26,7 +26,9 @@ header nav ul li {
     margin: 0 15px;
     position: relative;
 }
-
+header nav ul li {
+    position: relative;
+}
 header nav ul li a {
     color: white;
     text-decoration: none;
@@ -51,6 +53,14 @@ header nav ul li a:hover {
     display: block;
 }
 
+.dropdown-content {
+    position: relative;
+}
+.dropdown-content {
+    position: absolute;
+    top: 100%;
+    left: 0;
+}
 .client-dashboard {
     max-width: 1200px;
     margin: 50px auto;
@@ -92,4 +102,21 @@ header nav ul li a:hover {
     background-color: #f1f1f1;
     color: #333;
     font-weight: bold;
+}
+
+
+.menu-dropdown .dropdown-content a {
+    color: #ffffff;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+.menu-dropdown .dropdown-content a:hover {
+    background-color: #333;
+}
+
+.menu-dropdown:hover .dropdown-content {
+    display: block;
 }

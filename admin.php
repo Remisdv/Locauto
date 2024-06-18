@@ -73,25 +73,25 @@ $result_reservations = $conn->query($sql_reservations);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administration</title>
-    <link rel="stylesheet" href="CSS/styles.css">
     <link rel="stylesheet" href="CSS/admin.css">
+    <link rel="stylesheet" href="CSS/styles.css">
 </head>
 <body>
 <header>
     <nav>
-    <ul>
-                <li><a href="index.php">Accueil</a></li>
-                <li><a href="admin.php">Réservations</a></li>
-                <li><a href="admin_annonces.php">Gérer les Annonces</a></li>
-                <li><a href="admin_clients.php">Gérer les Clients</a></li>
-                <li><a href="planing.php">Voir le Planing</a></li>
-                <li><a href="logout.php">Déconnexion</a></li>
-            </ul>
+        <ul>
+            <li><a href="index.php">Accueil</a></li>
+            <li><a href="admin.php">Réservations</a></li>
+            <li><a href="admin_annonces.php">Gérer les Annonces</a></li>
+            <li><a href="admin_clients.php">Gérer les Clients</a></li>
+            <li><a href="planing.php">Voir le Planing</a></li>
+            <li><a href="logout.php">Déconnexion</a></li>
+        </ul>
     </nav>
 </header>
 
-    <div class="admin-container">
-        <h2>Administration - Réservations</h2>
+    <div class="admin-containerspe">
+        <h2 class="admin-title">Administration - Réservations</h2>
         <?php if ($message): ?>
             <p class="message"><?php echo $message; ?></p>
         <?php endif; ?>

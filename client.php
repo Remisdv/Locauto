@@ -68,6 +68,7 @@ $result_current = $conn->query($sql_current);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tableau de Bord Client</title>
     <link rel="stylesheet" href="CSS/client.css">
+    <link rel="stylesheet" href="CSS/style.css">
 </head>
 <body>
     <header>
